@@ -8,21 +8,29 @@ import {
 } from "@stripe/react-stripe-js";
 import "bootswatch/dist/lux/bootstrap.min.css";
 
+/* Variable para conectarse a Stripe */
 const stripePromise = loadStripe(
   "pk_test_51KlcoTDjIaCZ8ivKJ7uBmV6bBluePd7rPDg2vscin7K5BnvJGgBxsPEyI4Nb1c7gTovHYByUH7SZ0bCoc298yhoJ00YLQ49ETM"
 );
 
+/* Funcion formulario de pago */
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
 
+  /* Funcion para capturar la informacion del imput*/
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    /* Variable informacion del pago*/
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),
     });
+
+    if (!error) {
+      console.log(paymentMethod);
+    }
   };
 
   return (
@@ -41,7 +49,7 @@ const CheckoutForm = () => {
     </form>
   );
 };
-
+/* funcion del componente*/
 export const Payment = () => {
   return (
     <Elements stripe={stripePromise}>
