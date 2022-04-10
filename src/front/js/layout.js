@@ -15,6 +15,9 @@ import { Contact } from "./component/contact";
 import { Maps } from "./component/maps";
 import { Features } from "./component/features";
 import { Payment } from "./component/payment";
+import { Success } from "./component/success";
+import { Cancel } from "./component/cancel";
+
 
 //create your first component
 const Layout = () => {
@@ -54,6 +57,12 @@ const Layout = () => {
             </Route>
             <Route exact path="/payment">
               <Payment />
+            </Route>
+            <Route exact path="/success">
+              <Success />
+            </Route>
+            <Route exact path="/cancel">
+              <Cancel />
             </Route>
             <Route exact path="/home/features">
               <Features />
