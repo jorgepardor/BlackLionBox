@@ -1,88 +1,44 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardElement,
-  
-} from "@stripe/react-stripe-js";
-import "bootswatch/dist/lux/bootstrap.min.css";
+import { Elements } from "@stripe/react-stripe-js";
 
-/* Variable para conectarse a Stripe */
-const stripePromise = loadStripe(
-  "process.env.REACT_APP_STRIPE_KEY"
-);
+import CheckoutForm from "./checkoutForm.js";
+import "../../styles/home.css";
 
-/* Funcion formulario de pago */
-const CheckoutForm = () => {
-    const [stripeError, setStripeError] = useState(null);
-    const [isLoading, setLoading] = useState(false);
-    const item = {
-      price: "price_1Kmd3IDjIaCZ8ivK9L7ZbYPQ",
-      quantity: 1
-    };
-  
-const checkoutOptions = {
-        lineItems: [item],
-        mode: "payment",
-        successUrl: `${window.location.origin}/success`,
-        cancelUrl: `${window.location.origin}/cancel`
-      };
- const redirectToCheckout = async () => {
-        setLoading(true);
-        console.log("redirectToCheckout");
-    
-        const stripe = await getStripe();
-        const { error } = await stripe.redirectToCheckout(checkoutOptions);
-        console.log("Stripe checkout error", error);
-    
-        if (error) setStripeError(error.message);
-        setLoading(false);
-      };
-    
-      if (stripeError) alert(stripeError);
-    
-  /* Funcion para capturar la informacion del imput*/
-   const handleSubmit = async (event) => {
-    event.preventDefault();
+// Make sure to call loadStripe outside of a component’s render to avoid
+// recreating the Stripe object on every render.
+// This is your test publishable API key.
+const stripePromise = loadStripe(process.env.React_APP_STRIPE_KEY);
 
-    /* Variable informacion del pago*/
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-    });
+export default function Payment() {
+  const [clientSecret, setClientSecret] = useState("");
 
-    if (!error) {
-      console.log(paymentMethod);
-    }
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads
+    fetch("/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+  }, []);
+
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
   };
 
   return (
-    <button onClick={handleSubmit}  disabled={isLoading} className="checkout-button">
-      <img
-        src="https://m.media-amazon.com/images/I/61nWszKX1-L._AC_SL1500_.jpg"
-        alt="Krom Kluster Keyboard"
-        className="img-fluid"
-      />
-
-      <div className="form-group">
-        <CardElement className="form-control" />
-      </div>
-
-      <button className="btn btn-success">Comprar</button>
-    </button>
+    <div className="App">
+      {clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm />
+        </Elements>
+      )}
+    </div>
   );
-};
-/* funcion del componente*/
-export const Payment = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <div className="container p-4">
-        <div className="row">
-          <div className="col-md-4 offset-md-4">
-            <CheckoutForm />
-          </div>
-        </div>
-      </div>
-    </Elements>
-  );
-};
+}

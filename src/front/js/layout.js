@@ -14,10 +14,9 @@ import { Login } from "./component/login";
 import { Contact } from "./component/contact";
 import { Maps } from "./component/maps";
 import { Features } from "./component/features";
-import { Payment } from "./component/payment";
+import Payment from "./component/payment";
 import { Success } from "./component/success";
 import { Cancel } from "./component/cancel";
-
 
 //create your first component
 const Layout = () => {

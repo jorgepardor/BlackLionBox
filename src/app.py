@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, url_for, send_from_directory, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
@@ -11,6 +11,11 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from flask_jwt_extended import JWTManager
+import stripe 
+
+
+
+stripe.api_key = process.env.React_APP_STRIPE_KEY
 #from models import Person
 
 ENV = os.getenv("FLASK_ENV")
