@@ -67,6 +67,7 @@ class Suscription(db.Model):
     suscription_image = db.Column(db.String(256), unique=False, nullable=False)
     suscription_type_id = db.Column(db.Integer, db.ForeignKey('suscription_type.id'), unique=False, nullable=True)
     suscription_type = db.relationship('Suscription_type', backref='suscription', lazy=True)
+    # codigo_stripe = db.Column(db.String(60), unique=True, nullable=True)
 
     def __repr__(self):
         return '<Suscription %r>' % self.name
@@ -77,7 +78,8 @@ class Suscription(db.Model):
             "name": self.name,
             "description": self.description,
             "price": self.price,
-            "tokens": self.tokens
+            "tokens": self.tokens,
+            #"codigo_stripe" : self.codigo_stripe
         }
 
 class Sessions(db.Model):

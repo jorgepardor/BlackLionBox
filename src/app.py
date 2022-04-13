@@ -11,11 +11,11 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from flask_jwt_extended import JWTManager
-import stripe 
 
 
 
-stripe.api_key = process.env.React_APP_STRIPE_KEY
+
+
 #from models import Person
 
 ENV = os.getenv("FLASK_ENV")
