@@ -57,10 +57,10 @@ const Layout = () => {
             <Route exact path="/payment">
               <Payment />
             </Route>
-            <Route exact path="/payment/success">
+            <Route exact path="/success">
               <Success />
             </Route>
-            <Route exact path="payment/cancel">
+            <Route exact path="/cancel">
               <Cancel />
             </Route>
             <Route exact path="/home/features">

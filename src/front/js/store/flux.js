@@ -1,6 +1,3 @@
-import { Cancel } from "../component/cancel";
-import { Success } from "../component/success";
-
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -9,7 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       codigo_stripe: "",
     },
     actions: {
-      pay: (codigo_stripe, user_id) => {
+      pay: (user_id) => {
         let stripe = Stripe(process.env.React_APP_STRIPE_KEY);
         stripe
           .redirectToCheckout({
@@ -17,8 +14,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               { price: "price_1Kmd3IDjIaCZ8ivK9L7ZbYPQ", quantity: 1 },
             ],
             mode: "subscription",
-            successUrl: <Success />,
-            cancelUrl: <Cancel />,
+            successUrl:
+              "https://3000-jmmonzonn-finalprojectbl-zeavhkau3qo.ws-eu39b.gitpod.io/success",
+            cancelUrl:
+              "https://3000-jmmonzonn-finalprojectbl-zeavhkau3qo.ws-eu39b.gitpod.io/cancel",
           })
           .then(function (result) {
             if (result.error) {
