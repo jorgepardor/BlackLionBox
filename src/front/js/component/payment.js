@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Context } from "../store/appContext.js";
-import "bootswatch/dist/lux/bootstrap.min.css";
 
 /* Abrimos el componente */
 export const Payment = () => {
@@ -13,15 +12,10 @@ export const Payment = () => {
         alt="Krom Kluster Keyboard"
         className="img-fluid"
       />
-
-      <div className="form-group">
-        <CardElement className="form-control" />
-      </div>
-
       <button
         type="button"
         onClick={() => {
-          actions.pay(codigo_stripe, store.user_id);
+          actions.pay(store.user_id);
         }}
         className="btn btn-success"
         id="pay"
