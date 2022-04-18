@@ -7,6 +7,7 @@ import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
+import { NavbarAdmin } from "./component/navbarAdmin";
 import { Footer } from "./component/footer";
 import { UserDashboard } from "./pages/userDashboard";
 import { Register } from "./component/register";
@@ -14,9 +15,13 @@ import { Login } from "./component/login";
 import { Contact } from "./component/contact";
 import { Maps } from "./component/maps";
 import { Features } from "./component/features";
+<<<<<<< HEAD
 import { Payment } from "./component/payment";
 import { Success } from "./component/success";
 import { Cancel } from "./component/cancel";
+=======
+import { SubscriptionTiers } from "./component/adminSubscriptionTiers";
+>>>>>>> main
 
 //create your first component
 const Layout = () => {
@@ -25,35 +30,40 @@ const Layout = () => {
   const basename = process.env.BASENAME || "";
 
   return (
-    <div className=" bg-L-Gray-light h-full d-flex flex-column min-vh-100">
+    <div className=" bg-L-Gray-light dark:bg-D-Gray-dark dark:border-D-Gray-med h-full d-flex flex-column min-vh-100">
       <BrowserRouter basename={basename}>
         <ScrollToTop>
-          <Navbar />
           <Switch>
             <Route exact path="/">
+              <Navbar />
               <Home />
             </Route>
             <Route exact path="/user/dashboard">
               <UserDashboard />
             </Route>
             <Route exact path="/admin/dashboard">
+              <NavbarAdmin />
               <AdminDashboard />
             </Route>
             <Route exact path="/single/:theid">
               <Single />
             </Route>
             <Route exact path="/register">
+              <Navbar />
               <Register />
             </Route>
             <Route exact path="/login">
+              <Navbar />
               <Login />
             </Route>
             <Route exact path="/contact">
+              <Navbar />
               <Contact />
             </Route>
             <Route exact path="/maps">
               <Maps />
             </Route>
+<<<<<<< HEAD
             <Route exact path="/payment">
               <Payment />
             </Route>
@@ -64,7 +74,13 @@ const Layout = () => {
               <Cancel />
             </Route>
             <Route exact path="/home/features">
+=======
+            <Route exact path="/features">
+>>>>>>> main
               <Features />
+            </Route>
+            <Route exact path="/asubscriptions">
+              <SubscriptionTiers />
             </Route>
             <Route>
               <h1>Not found!</h1>

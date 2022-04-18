@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 db = SQLAlchemy()
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(24), unique=True, nullable=False)
@@ -20,7 +21,9 @@ class User(db.Model):
     suscription_id = db.Column(db.Integer, db.ForeignKey('suscription.id'))
     role = db.relationship('Role', backref='user', lazy=True)
     suscription = db.relationship('Suscription', backref='user', lazy=True)
-   
+    user_sessions = db.relationship("User_sessions", back_populates="users")
+
+  
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -64,7 +67,7 @@ class Suscription(db.Model):
     description = db.Column(db.String(48), unique=False, nullable=False)
     price = db.Column(db.Float, unique=False, nullable=False)
     tokens = db.Column(db.Integer, unique=False, nullable=False)
-    suscription_image = db.Column(db.String(256), unique=False, nullable=False)
+    suscription_image = db.Column(db.String(256), unique=False, nullable=True)
     suscription_type_id = db.Column(db.Integer, db.ForeignKey('suscription_type.id'), unique=False, nullable=True)
     suscription_type = db.relationship('Suscription_type', backref='suscription', lazy=True)
     codigo_stripe = db.Column(db.String(60), unique=True, nullable=True)
@@ -79,7 +82,11 @@ class Suscription(db.Model):
             "description": self.description,
             "price": self.price,
             "tokens": self.tokens,
+<<<<<<< HEAD
             "codigo_stripe" : self.codigo_stripe
+=======
+            "suscription_type": self.suscription_type.name if self.suscription_type else None
+>>>>>>> main
         }
 
 class Sessions(db.Model):
@@ -94,7 +101,9 @@ class Sessions(db.Model):
     session_type = db.relationship('Sessions_type', backref='sessions', lazy=True)
     weekdays_id = db.Column(db.Integer, db.ForeignKey('weekdays.id'), nullable=False)
     weekdays = db.relationship('Weekdays', backref='sessions', lazy=True)
+    session_users = db.relationship("User_sessions", back_populates="sessions")
 
+    
     def __repr__(self):
         return '<Sessions %r>' % self.name
 
@@ -107,7 +116,8 @@ class Sessions(db.Model):
             "start_time": self.start_time.strftime("%H:%M:%S"),
             "duration": self.duration,
             "max-users": self.max_users,
-            "session_type": self.session_type.name if self.session_type else None
+            "session_type": self.session_type.name if self.session_type else None,
+            "weekdays": self.weekdays.name if self.weekdays else None
 
         }
         
@@ -172,9 +182,10 @@ class Suscription_type(db.Model):
 class User_sessions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False)
-    user = db.relationship('User', backref='user_sessions', lazy=True)
+    users = db.relationship('User', back_populates="user_sessions")
     sessions_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), unique=False, nullable=False)
-    session = db.relationship('Sessions', backref='user_sessions', lazy=True)
+    sessions = db.relationship('Sessions', back_populates="session_users")
+    # date =  db.Column(db.Date, unique=False, nullable=False)
     is_coach = db.Column(db.Boolean)
 
     def __repr__(self):
@@ -205,3 +216,5 @@ class Available_sessions(db.Model):
             "sessions_id": self.sessions_id,
             "is_coach": self.is_coach
         }
+
+

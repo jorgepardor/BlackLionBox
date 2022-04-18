@@ -1,5 +1,9 @@
 module.exports = {
-  content: ["./src/**/*.{html,js}", "./node_modules/flowbite/**/*.js"],
+  darkMode: "class",
+  content: [
+    "./src/**/*.{html,js,jsx,ts,tsx}",
+    "./node_modules/flowbite/**/*.js",
+  ],
   theme: {
     colors: {
       // Black Lion Box color palette
@@ -19,6 +23,16 @@ module.exports = {
       "A-Orange": "#F26722",
     },
     extend: {},
+    fontFamily: {
+      sans: ["Archivo Narrow", "sans-serif"],
+      bellfort: ["BELLFORT", "sans-serif"],
+      heading: ["Bebas Neue", "sans-serif"],
+    },
   },
-  plugins: [require("flowbite/plugin")],
+  plugins: [
+    require("flowbite/plugin"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
 };

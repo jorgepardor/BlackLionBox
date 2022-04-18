@@ -8,21 +8,27 @@ import {
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
 import {
+  fas,
   faCheck,
   faPenToSquare,
   faXmark,
+  faCloudMoon,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 
 function initFontAwesome() {
   library.add(
     fab,
+    fas,
     faTwitterSquare,
     faFacebook,
     faLinkedin,
     faInstagram,
     faXmark,
     faPenToSquare,
-    faCheck
+    faCheck,
+    faCloudMoon,
+    faSun
   );
 }
 

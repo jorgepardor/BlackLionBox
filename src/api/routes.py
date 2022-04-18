@@ -10,8 +10,9 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from datetime import date, timedelta
 import calendar
 
-api = Blueprint('api', __name__)
+from babel.dates import format_date
 
+api = Blueprint('api', __name__)
 
 @api.route('/signup', methods=["POST"])
 def create_user():
@@ -26,15 +27,17 @@ def create_user():
     conditions_terms = request.json.get("conditions_terms", None)
     marketing_comunication = request.json.get("marketing_comunication", None)
     info = request.json.get("info", None)
+    role_id = request.json.get("role_id", None)
 
     # if None in [username, password, email, phone, first_name, last_name, conditions_terms]:
     #     return jsonify({"message" : "Alguno de los campos obligatorios no furula"}),400
     try:
-        role = Role.query.filter_by(name="user").first()
+
+        role = Role.query.filter_by(name="user").first() if not role_id else Role.query.filter_by(id=role_id).first()
         new_user = User(username = username, password = password, email = email, phone = phone, 
                         first_name = first_name, last_name = last_name, adress = adress, 
                         avatar_url = avatar_url, conditions_terms = conditions_terms, 
-                        marketing_comunication = marketing_comunication, info = info, is_active = False, role_id = role.id)
+                        marketing_comunication = marketing_comunication, info = info, is_active = False, role = role)
         db.session.add(new_user)
         db.session.commit()
         token = create_access_token(identity=new_user.username)
@@ -71,29 +74,37 @@ def login():
     return jsonify(data_response), 200
 
 @api.route('/suscription', methods=["POST"])
+@jwt_required()
 def create_suscription():
      name = request.json.get("name", None)
      description = request.json.get("description", None)
      price = request.json.get("price", None)
      tokens = request.json.get("tokens", None)
-     suscription_image = request.json.get("suscription_image", None)
+     suscription_type_id = request.json.get("suscription_type_id", None)
+    #  suscription_type = request.json.get("suscription_type", None)
 
-     not_unique_name = Suscription.query.filter_by(name = name).first()  
-     if not_unique_name != None:
-        return jsonify({"message": "Este suscritor ya existe, prueba con otro."}),401
+    #  not_unique_name = Suscription.query.filter_by(name = name).first()  
+    #  if not_unique_name != None:
+    #     return jsonify({"message": "Este suscritor ya existe, prueba con otro."}),401
 
-     if name == '' or name == None or description == '' or description == None or price == '' or price == None or tokens == '' or tokens == None or suscription_image == '' or suscription_image == None:
-        return jsonify({"message": "Rellena todos los campos obligatorios"}), 401
+    #  if name == '' or name == None or description == '' or description == None or price == '' or price == None or tokens == '' or tokens == None:
+    #     return jsonify({"message": "Rellena todos los campos obligatorios"}), 401
     
     
-     new_suscription = Suscription(name = name, description = description, price = price, tokens = tokens, suscription_image = suscription_image)
+     new_suscription = Suscription(name = name, description = description, price = price, tokens = tokens, suscription_type_id = suscription_type_id)
      db.session.add(new_suscription)
      db.session.commit()
  
      return jsonify({"message" : "Suscription nueva creada"}),200
 
+@api.route("/get_suscriptions", methods=["GET"])
+@jwt_required()
+def get_suscriptions():
+    return jsonify([suscription.serialize() for suscription in Suscription.query.all()]), 200
+
 
 @api.route('/sessions', methods=["POST"])
+@jwt_required()
 def create_sessions():
      name = request.json.get("name", None)
      description = request.json.get("description", None)
@@ -118,6 +129,12 @@ def create_sessions():
      return jsonify({"message" : "Session nueva creada"}),200
 
 
+@api.route("/get_sessions", methods=["GET"])
+@jwt_required()
+def get_sessions():
+    return jsonify([sessions.serialize() for session in Sessions.query.all()]), 200
+
+
 @api.route('/role', methods=["POST"])
 @jwt_required()
 def create_role():
@@ -137,14 +154,17 @@ def create_role():
     return jsonify({"message" : "Rol creado"}),200
 
 @api.route("/get_role", methods=["GET"])
+@jwt_required()
 def get_role():
     return jsonify([role.serialize() for role in Role.query.all()]), 200
 
 @api.route("/weekdays", methods=["GET"])
+@jwt_required()
 def get_weekdays():
     return jsonify([name.serialize() for name in Weekdays.query.all()]), 200
 
 @api.route('/weekdays', methods=["POST"])
+@jwt_required()
 def create_weekdays():
     name = request.json.get("name", None)
 
@@ -163,6 +183,7 @@ def create_weekdays():
     
 
 @api.route('/sessions_type', methods=["POST"])
+@jwt_required()
 def create_sessions_type():
     name = request.json.get("name", None)
 
@@ -178,6 +199,11 @@ def create_sessions_type():
     db.session.commit()
 
     return jsonify({"message" : "Nuevo tipo de sesion creada"}),200
+
+@api.route("/get_session_types", methods=["GET"])
+@jwt_required()
+def get_session_types():
+    return jsonify([session_type.serialize() for session_type in Sessions_type.query.all()]), 200
 
 @api.route('/suscription_type', methods=["POST"])
 @jwt_required()
@@ -198,6 +224,7 @@ def create_suscription_type():
     return jsonify({"message" : "Tu suscripcion ha sido creada"}),200
 
 @api.route("/get_suscription_types", methods=["GET"])
+@jwt_required()
 def get_suscription_type():
     return jsonify([suscription_type.serialize() for suscription_type in Suscription_type.query.all()]), 200
 
@@ -212,17 +239,19 @@ def handle_validate():
         return jsonify({"validate": False}), 400
 
 @api.route("/thisweek", methods=["GET"])
+@jwt_required()
 def weeklysessions():
     today = date.today()
     data_response = []
-    i = 0
-    while i < 6:
+    for i in range(7):
         endDate = date.today() + timedelta(days=i)
-        whichDay = calendar.day_name[endDate.weekday()]
-        dsessions = Sessions.query.filter(Sessions.days.ilike("%"+whichDay+"%")).order_by(Sessions.start_time).all()
-        i += 1
-        var = {whichDay: [dailysessions.serialize() for dailysessions in dsessions]}
-        data_response.append(var)
+        whichDay = format_date(endDate, format='EEEE', locale='es').capitalize()
+        dsessions = Sessions.query.filter(Sessions.weekdays.has(name=whichDay)).order_by(Sessions.start_time).all()
+        data_response.append({
+            "label": whichDay,
+            "sessions": [dailysessions.serialize() for dailysessions in dsessions],
+            "date": endDate
+        })
 
     return jsonify(data_response),200
 

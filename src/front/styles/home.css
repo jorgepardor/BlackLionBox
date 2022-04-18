@@ -1,37 +1,56 @@
 /* Configuración de tailwindcss */
 
+/* Tipografía del cuerpo de la página */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&display=swap");
+
+/* Tipografía de los encabezados de la página */
+
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "BELLFORT";
+  src: url("../fonts/BellfortRegular.otf");
+}
+
+/* Configuración del header  */
+
+/* Fondo hero style del header */
+.headerbg {
+  background: url("https://res.cloudinary.com/blacklionbox/image/upload/v1649261385/fondoheader2_sybjbj.jpg")
+    center center/cover no-repeat;
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2);
+  object-fit: contain;
+}
+
+/* Contenedor de los elementos del header */
 .mainheader {
-  margin: 0;
-  /* height: 100vh; */
+  height: 60vh;
   background: #e3ebea;
 }
 
-.container {
-  /* width: 60%;
-  margin: 8em auto; */
-  text-align: center;
-}
-
+/* Máscara del video */
 .logoheader {
-  clip-path: url(#logoheadermask);
-  /* width: 60%; */
-  /* object-fit: cover; */
+  /* clip-path: url(#logoheadermask); */
+  width: 70%;
+  display: inline-flex;
 }
 
-.logoheader-container {
-  position: absolute;
-  margin: auto;
-}
-
+/* Oculta el svg que sirve de máscara al video */
 .hideme {
   height: 0px;
 }
 
-/* Configuración cards invertidas */
+/* Configuración de las imágenes de Features */
 
 /* Container cards invertidas*/
 .flip-card {
@@ -62,31 +81,24 @@
   backface-visibility: hidden;
 }
 
-/* Stilo parte trasera de la card */
+/* Estilo parte trasera de la card */
 .flip-card-back {
   background-color: white;
   color: black;
   transform: rotateY(180deg);
 }
 
-/* Stilo de la imagen*/
-.image {
+/* Estilo de la imagen*/
+.image-features {
   display: block;
   width: 100%;
   height: 100%;
+  z-index: -1;
 }
 
-/* Configuración button cards */
-.btn-features {
+.button-feat {
   position: absolute;
-  top: 85%;
-  left: 35%;
-}
-
-.btn-features-back {
-  position: absolute;
-  top: 0%;
-  left: 80%;
+  bottom: 0;
 }
 
 /* Configuración Stripe */
